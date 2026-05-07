@@ -1,0 +1,47 @@
+{
+  "user-service": {
+    "direct_dependencies": {
+      "spring-boot-starter-web": "2.6.1",
+      "log4j-core": "2.14.1",
+      "commons-collections": "4.1"
+    },
+    "api_endpoints": ["/api/users/login", "/api/users/profile", "/api/users/register"],
+    "call_graph": {
+      "/api/users/login": ["UserController.login", "AuthService.authenticate", "JwtUtil.generateToken"],
+      "/api/users/profile": ["UserController.getProfile", "UserService.getUser", "UserRepository.findById"]
+    }
+  },
+  "order-service": {
+    "direct_dependencies": {
+      "spring-boot-starter-web": "2.5.0",
+      "commons-collections": "4.1",
+      "jackson-databind": "2.13.0"
+    },
+    "api_endpoints": ["/api/orders/create", "/api/orders/list", "/api/orders/{id}"],
+    "call_graph": {
+      "/api/orders/create": ["OrderController.create", "OrderService.processOrder", "InventoryClient.checkStock"],
+      "/api/orders/list": ["OrderController.list", "OrderService.getOrders", "OrderRepository.findAll"]
+    }
+  },
+  "payment-service": {
+    "direct_dependencies": {
+      "spring-boot-starter-web": "2.7.5",
+      "log4j-core": "2.16.0",
+      "okhttp": "4.9.1"
+    },
+    "api_endpoints": ["/api/payments/process", "/api/payments/refund"],
+    "call_graph": {
+      "/api/payments/process": ["PaymentController.process", "PaymentService.execute", "ExternalPaymentGateway.call"]
+    }
+  },
+  "inventory-service": {
+    "direct_dependencies": {
+      "spring-boot-starter-web": "2.6.0",
+      "log4j-core": "2.15.0"
+    },
+    "api_endpoints": ["/api/inventory/check", "/api/inventory/update"],
+    "call_graph": {
+      "/api/inventory/check": ["InventoryController.check", "InventoryService.verifyStock", "RedisClient.get"]
+    }
+  }
+}
